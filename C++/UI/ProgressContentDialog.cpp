@@ -92,7 +92,7 @@ void ProgressContentDialog::perform(Proc proc, CancelProc cancelProc, Completion
 									// Update UI
 									info.mMessageTextBlock.Text(progress.getMessage().getOSString());
 
-									OV<Float32>	value = progress.getValue();
+									const	OV<Float32>&	value = progress.getValue();
 									info.mProgressBar.IsIndeterminate(!value.hasValue());
 									info.mProgressBar.Value(value.hasValue() ? *value : 0.0);
 								});
