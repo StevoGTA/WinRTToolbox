@@ -1,5 +1,5 @@
 //----------------------------------------------------------------------------------------------------------------------
-//	ProgressContentDialog.cpp			©2021 Monkey Tools, LLC		All rights reserved.
+//	ProgressContentDialog.cpp			©2021 Stevo Brock		All rights reserved.
 //----------------------------------------------------------------------------------------------------------------------
 
 #include "ProgressContentDialog.h"
