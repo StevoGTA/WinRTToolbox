@@ -20,7 +20,24 @@ using namespace winrt::Windows::UI::Xaml;
 using namespace winrt::Windows::UI::Xaml::Controls;
 
 //----------------------------------------------------------------------------------------------------------------------
-// MARK: ProgressContentDialog
+//----------------------------------------------------------------------------------------------------------------------
+// MARK: ProgressContentDialogInternals
+
+class ProgressContentDialogInternals : public TCopyOnWriteReferenceCountable<ProgressContentDialogInternals> {
+	public:
+		ProgressContentDialogInternals(const TextBlock& messageTextBlock, const ProgressBar& progressBar,
+				const CoreDispatcher& dispatcher) :
+			mMessageTextBlock(messageTextBlock), mProgressBar(progressBar), mDispatcher(dispatcher)
+			{}
+
+		TextBlock		mMessageTextBlock;
+		ProgressBar		mProgressBar;
+		CoreDispatcher	mDispatcher;
+};
+
+//----------------------------------------------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
+// MARK: - ProgressContentDialog
 
 // MARK: Lifecycle methods
 
@@ -28,17 +45,6 @@ using namespace winrt::Windows::UI::Xaml::Controls;
 ProgressContentDialog::ProgressContentDialog() : ContentDialog()
 //----------------------------------------------------------------------------------------------------------------------
 {
-}
-
-// MARK: Instance methods
-
-//----------------------------------------------------------------------------------------------------------------------
-void ProgressContentDialog::perform(Proc proc, CancelProc cancelProc, CompletionProc completionProc, void* userData)
-//----------------------------------------------------------------------------------------------------------------------
-{
-	// Setup
-	bool	isCancelled = false;
-
 	// Setup UI
 	StackPanel	stackPanel;
 	stackPanel.Orientation(Orientation::Vertical);
@@ -58,8 +64,54 @@ void ProgressContentDialog::perform(Proc proc, CancelProc cancelProc, Completion
 
 	Content(stackPanel);
 
+	// Setup internals
+	mInternals = new ProgressContentDialogInternals(messageTextBlock, progressBar, Dispatcher());
+}
+
+//----------------------------------------------------------------------------------------------------------------------
+ProgressContentDialog::~ProgressContentDialog()
+//----------------------------------------------------------------------------------------------------------------------
+{
+	mInternals->removeReference();
+}
+
+// MARK: Instance methods
+
+//----------------------------------------------------------------------------------------------------------------------
+CProgress::UpdateInfo ProgressContentDialog::getProgressUpdateInfo() const
+//----------------------------------------------------------------------------------------------------------------------
+{
+	// Return update info
+	return CProgress::UpdateInfo([](const CProgress& progress, void* userData) {
+		// Setup
+		const	ProgressContentDialogInternals&	internals = *((ProgressContentDialogInternals*) userData);
+
+		// Update UI
+		internals.mDispatcher.RunAsync(CoreDispatcherPriority::Normal, [=]() {
+			// Update UI
+			internals.mMessageTextBlock.Text(progress.getMessage().getOSString());
+
+			const	OV<Float32>&	value = progress.getValue();
+			internals.mProgressBar.IsIndeterminate(!value.hasValue());
+			internals.mProgressBar.Value(value.hasValue() ? *value : 0.0);
+		});
+	}, mInternals);
+}
+
+//----------------------------------------------------------------------------------------------------------------------
+void ProgressContentDialog::perform(const I<CProgress>& progress, Proc proc, CancelProc cancelProc,
+		CompletionProc completionProc, void* userData)
+//----------------------------------------------------------------------------------------------------------------------
+{
+	// Setup
+	auto			internals = mInternals->addReference();
+	bool			isCancelled = false;
+	ContentDialog	progressContentDialog(*this);
+
+	// Setup UI
 	CloseButtonText(L"Cancel");
-	CloseButtonClick([=, &isCancelled](const ContentDialog& contentDialog, const ContentDialogButtonClickEventArgs& eventArgs) {
+	CloseButtonClick([=, &isCancelled](const ContentDialog& contentDialog,
+			const ContentDialogButtonClickEventArgs& eventArgs) {
 		// Cancelled
 		isCancelled = true;
 
@@ -68,48 +120,23 @@ void ProgressContentDialog::perform(Proc proc, CancelProc cancelProc, Completion
 	});
 
 	// Run
-	auto	dispatcher = Dispatcher();
-	ThreadPool::RunAsync([=, *this](IAsyncAction const& workItem) {
-		// Setup
-		struct Info {
-			TextBlock		mMessageTextBlock;
-			ProgressBar		mProgressBar;
-			CoreDispatcher	mDispatcher;
-
-			Info(const TextBlock& messageTextBlock, const ProgressBar& progressBar, const CoreDispatcher& dispatcher) :
-				mMessageTextBlock(messageTextBlock), mProgressBar(progressBar), mDispatcher(dispatcher)
-				{}
-		};
-		Info	info(messageTextBlock, progressBar, dispatcher);
-
-		CProgress	progress(
-							CProgress::UpdateInfo([](const CProgress& progress, void* userData) {
-								// Setup
-								const	Info&	info = *((Info*) userData);
-
-								// Update UI
-								info.mDispatcher.RunAsync(CoreDispatcherPriority::Normal, [=]() {
-									// Update UI
-									info.mMessageTextBlock.Text(progress.getMessage().getOSString());
-
-									const	OV<Float32>&	value = progress.getValue();
-									info.mProgressBar.IsIndeterminate(!value.hasValue());
-									info.mProgressBar.Value(value.hasValue() ? *value : 0.0);
-								});
-							}, &info));
-
+	ThreadPool::RunAsync([=, &isCancelled](IAsyncAction const& workItem) {
 		// Call proc
 		void*	result = proc(progress, userData);
 
 		// Switch to UI
-		dispatcher.RunAsync(CoreDispatcherPriority::Normal, [=, *this, &isCancelled]() {
+		bool	wasCancelled = isCancelled;
+		internals->mDispatcher.RunAsync(CoreDispatcherPriority::Normal, [=, &wasCancelled]() {
 			// Hide
-			this.Hide();
+			progressContentDialog.Hide();
 
 			// Check cancelled
-			if (!isCancelled)
+			if (!wasCancelled)
 				// Call completion proc
 				completionProc(result, userData);
+
+			// Cleanup
+			internals->removeReference();
 		});
 	});
 

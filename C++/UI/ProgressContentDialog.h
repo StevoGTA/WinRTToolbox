@@ -7,7 +7,9 @@
 #include "CProgress.h"
 
 #undef Delete
+
 #include "winrt/Windows.UI.Xaml.Controls.h"
+
 #define Delete(x)	{ delete x; x = nil; }
 
 using namespace winrt::Windows::UI::Xaml::Controls;
@@ -15,17 +17,26 @@ using namespace winrt::Windows::UI::Xaml::Controls;
 //----------------------------------------------------------------------------------------------------------------------
 // MARK: ProgressContentDialog
 
+class ProgressContentDialogInternals;
 class ProgressContentDialog : public ContentDialog {
 	// Types
-	typedef	void*	(*Proc)(CProgress& progress, void* userData);
+// Would be super nice if these were Lambdas...
+	typedef	void*	(*Proc)(const I<CProgress>& progress, void* userData);
 	typedef	void	(*CancelProc)(void* userData);
 	typedef	void	(*CompletionProc)(void* result, void* userData);
 
 	// Methods
 	public:
-				// Lifecycle methods
-				ProgressContentDialog();
+								// Lifecycle methods
+								ProgressContentDialog();
+								~ProgressContentDialog();
 
-				// Instance methods
-		void	perform(Proc proc, CancelProc cancelProc, CompletionProc completionProc, void* userData);
+								// Instance methods
+		CProgress::UpdateInfo	getProgressUpdateInfo() const;
+		void					perform(const I<CProgress>& progress, Proc proc, CancelProc cancelProc,
+										CompletionProc completionProc, void* userData);
+
+	// Properties
+	private:
+		ProgressContentDialogInternals*	mInternals;
 };
