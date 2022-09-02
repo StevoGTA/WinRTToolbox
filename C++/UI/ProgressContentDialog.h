@@ -6,6 +6,8 @@
 
 #include "CProgress.h"
 
+#include <functional>	// May only be needed in VS2019
+
 #undef Delete
 
 #include "winrt/Windows.UI.Xaml.Controls.h"
@@ -20,10 +22,9 @@ using namespace winrt::Windows::UI::Xaml::Controls;
 class ProgressContentDialogInternals;
 class ProgressContentDialog : public ContentDialog {
 	// Types
-// Would be super nice if these were Lambdas...
-	typedef	void*	(*Proc)(const I<CProgress>& progress, void* userData);
-	typedef	void	(*CancelProc)(void* userData);
-	typedef	void	(*CompletionProc)(void* result, void* userData);
+	typedef	std::function<void*(const I<CProgress>& progress)>	Proc;
+	typedef	std::function<void()>								CancelProc;
+	typedef	std::function<void(void* result)>					CompletionProc;
 
 	// Methods
 	public:
@@ -34,7 +35,7 @@ class ProgressContentDialog : public ContentDialog {
 								// Instance methods
 		CProgress::UpdateInfo	getProgressUpdateInfo() const;
 		void					perform(const I<CProgress>& progress, Proc proc, CancelProc cancelProc,
-										CompletionProc completionProc, void* userData);
+										CompletionProc completionProc);
 
 	// Properties
 	private:

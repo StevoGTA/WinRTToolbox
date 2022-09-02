@@ -25,14 +25,20 @@ using namespace winrt::Windows::UI::Xaml::Controls;
 
 class ProgressContentDialogInternals : public TCopyOnWriteReferenceCountable<ProgressContentDialogInternals> {
 	public:
-		ProgressContentDialogInternals(const TextBlock& messageTextBlock, const ProgressBar& progressBar,
-				const CoreDispatcher& dispatcher) :
-			mMessageTextBlock(messageTextBlock), mProgressBar(progressBar), mDispatcher(dispatcher)
+		ProgressContentDialogInternals(ProgressContentDialog& progressContentDialog, const TextBlock& messageTextBlock,
+				const ProgressBar& progressBar, const CoreDispatcher& dispatcher) :
+			mContentDialog(progressContentDialog),
+					mIsCancelled(false), mDispatcher(dispatcher),
+					mMessageTextBlock(messageTextBlock), mProgressBar(progressBar)
 			{}
+
+		ContentDialog	mContentDialog;
+
+		bool			mIsCancelled;
+		CoreDispatcher	mDispatcher;
 
 		TextBlock		mMessageTextBlock;
 		ProgressBar		mProgressBar;
-		CoreDispatcher	mDispatcher;
 };
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -65,7 +71,7 @@ ProgressContentDialog::ProgressContentDialog() : ContentDialog()
 	Content(stackPanel);
 
 	// Setup internals
-	mInternals = new ProgressContentDialogInternals(messageTextBlock, progressBar, Dispatcher());
+	mInternals = new ProgressContentDialogInternals(*this, messageTextBlock, progressBar, Dispatcher());
 }
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -84,14 +90,15 @@ CProgress::UpdateInfo ProgressContentDialog::getProgressUpdateInfo() const
 	// Return update info
 	return CProgress::UpdateInfo([](const CProgress& progress, void* userData) {
 		// Setup
+				CString							message(progress.getMessage());
+				OV<Float32>						value(progress.getValue());
 		const	ProgressContentDialogInternals&	internals = *((ProgressContentDialogInternals*) userData);
 
 		// Update UI
-		internals.mDispatcher.RunAsync(CoreDispatcherPriority::Normal, [=]() {
+		internals.mDispatcher.RunAsync(CoreDispatcherPriority::Normal, [=, &internals]() {
 			// Update UI
-			internals.mMessageTextBlock.Text(progress.getMessage().getOSString());
+			internals.mMessageTextBlock.Text(message.getOSString());
 
-			const	OV<Float32>&	value = progress.getValue();
 			internals.mProgressBar.IsIndeterminate(!value.hasValue());
 			internals.mProgressBar.Value(value.hasValue() ? *value : 0.0);
 		});
@@ -100,40 +107,37 @@ CProgress::UpdateInfo ProgressContentDialog::getProgressUpdateInfo() const
 
 //----------------------------------------------------------------------------------------------------------------------
 void ProgressContentDialog::perform(const I<CProgress>& progress, Proc proc, CancelProc cancelProc,
-		CompletionProc completionProc, void* userData)
+		CompletionProc completionProc)
 //----------------------------------------------------------------------------------------------------------------------
 {
 	// Setup
-	auto			internals = mInternals->addReference();
-	bool			isCancelled = false;
-	ContentDialog	progressContentDialog(*this);
+	auto	internals = mInternals->addReference();
 
 	// Setup UI
 	CloseButtonText(L"Cancel");
-	CloseButtonClick([=, &isCancelled](const ContentDialog& contentDialog,
+	CloseButtonClick([=](const ContentDialog& contentDialog,
 			const ContentDialogButtonClickEventArgs& eventArgs) {
 		// Cancelled
-		isCancelled = true;
+		internals->mIsCancelled = true;
 
 		// Call cancel proc
-		cancelProc(userData);
+		cancelProc();
 	});
 
 	// Run
-	ThreadPool::RunAsync([=, &isCancelled](IAsyncAction const& workItem) {
+	ThreadPool::RunAsync([=](IAsyncAction const& workItem) {
 		// Call proc
-		void*	result = proc(progress, userData);
+		void*	result = proc(progress);
 
 		// Switch to UI
-		bool	wasCancelled = isCancelled;
-		internals->mDispatcher.RunAsync(CoreDispatcherPriority::Normal, [=, &wasCancelled]() {
+		internals->mDispatcher.RunAsync(CoreDispatcherPriority::Normal, [=]() {
 			// Hide
-			progressContentDialog.Hide();
+			internals->mContentDialog.Hide();
 
 			// Check cancelled
-			if (!wasCancelled)
+			if (!internals->mIsCancelled)
 				// Call completion proc
-				completionProc(result, userData);
+				completionProc(result);
 
 			// Cleanup
 			internals->removeReference();

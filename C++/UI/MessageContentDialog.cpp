@@ -36,53 +36,72 @@ static CString sApplyReplacements(const CString& string)
 
 //----------------------------------------------------------------------------------------------------------------------
 //----------------------------------------------------------------------------------------------------------------------
-// MARK: MessageContentDialogInternals
-
-//class MessageContentDialogInternals : public TCopyOnWriteReferenceCountable<MessageContentDialogInternals> {
-//	public:
-//		MessageContentDialogInternals(const TextBlock& messageTextBlock, const ProgressBar& progressBar,
-//				const CoreDispatcher& dispatcher) :
-//			mMessageTextBlock(messageTextBlock), mProgressBar(progressBar), mDispatcher(dispatcher)
-//			{}
-//
-//		TextBlock		mMessageTextBlock;
-//		ProgressBar		mProgressBar;
-//		CoreDispatcher	mDispatcher;
-//};
-
-//----------------------------------------------------------------------------------------------------------------------
-//----------------------------------------------------------------------------------------------------------------------
 // MARK: - MessageContentDialog
 
 // MARK: Lifecycle methods
 
 //----------------------------------------------------------------------------------------------------------------------
-MessageContentDialog::MessageContentDialog(const CString& title, const CString& message, const CString& buttonLabel) :
-		ContentDialog()
+MessageContentDialog::MessageContentDialog(const CString& title, const CString& message, const CString& buttonLabel,
+		const ButtonProc& buttonProc) : ContentDialog()
 //----------------------------------------------------------------------------------------------------------------------
 {
 	// Setup UI
 	Title(box_value(sApplyReplacements(title).getOSString()));
 	Content(box_value(sApplyReplacements(message).getOSString()));
-	PrimaryButtonText(buttonLabel.getOSString());
 
-	// Setup internals
-	//mInternals = new MessageContentDialogInternals(messageTextBlock, progressBar, Dispatcher());
+	PrimaryButtonText(buttonLabel.getOSString());
+	PrimaryButtonClick(
+			[buttonProc](const ContentDialog& contentDialog, const ContentDialogButtonClickEventArgs& eventArgs) {
+				// Call proc
+				buttonProc();
+			});
 }
 
 //----------------------------------------------------------------------------------------------------------------------
-MessageContentDialog::~MessageContentDialog()
+MessageContentDialog::MessageContentDialog(const CString& title, const CString& message,
+		const CString& primaryButtonLabel, const ButtonProc& primaryButtonProc, const CString& secondaryButtonLabel,
+		const ButtonProc& secondaryButtonProc) : ContentDialog()
 //----------------------------------------------------------------------------------------------------------------------
 {
-	//mInternals->removeReference();
+	// Setup UI
+	Title(box_value(sApplyReplacements(title).getOSString()));
+	Content(box_value(sApplyReplacements(message).getOSString()));
+
+	PrimaryButtonText(primaryButtonLabel.getOSString());
+	PrimaryButtonClick(
+			[primaryButtonProc](const ContentDialog& contentDialog,
+					const ContentDialogButtonClickEventArgs& eventArgs) {
+				// Call proc
+				primaryButtonProc();
+			});
+
+	SecondaryButtonText(secondaryButtonLabel.getOSString());
+	SecondaryButtonClick(
+			[secondaryButtonProc](const ContentDialog& contentDialog,
+					const ContentDialogButtonClickEventArgs& eventArgs) {
+				// Call proc
+				secondaryButtonProc();
+			});
 }
 
 // MARK: Class methods
 
 //----------------------------------------------------------------------------------------------------------------------
-void MessageContentDialog::showAsync(const CString& title, const CString& message, const CString& buttonLabel)
+void MessageContentDialog::showAsync(const CString& title, const CString& message,
+		const CString& buttonLabel, const ButtonProc& buttonProc)
 //----------------------------------------------------------------------------------------------------------------------
 {
-	MessageContentDialog	messageContentDialog(title, message, buttonLabel);
+	MessageContentDialog	messageContentDialog(title, message, buttonLabel, buttonProc);
+	messageContentDialog.ShowAsync();
+}
+
+//----------------------------------------------------------------------------------------------------------------------
+void MessageContentDialog::showAsync(const CString& title, const CString& message,
+		const CString& primaryButtonLabel, const ButtonProc& primaryButtonProc, const CString& secondaryButtonLabel,
+		const ButtonProc& secondaryButtonProc)
+//----------------------------------------------------------------------------------------------------------------------
+{
+	MessageContentDialog	messageContentDialog(title, message, primaryButtonLabel, primaryButtonProc,
+									secondaryButtonLabel, secondaryButtonProc);
 	messageContentDialog.ShowAsync();
 }
