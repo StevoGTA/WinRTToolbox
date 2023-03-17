@@ -69,19 +69,11 @@ MessageContentDialog::MessageContentDialog(const CString& title, const CString& 
 
 	PrimaryButtonText(primaryButtonLabel.getOSString());
 	PrimaryButtonClick(
-			[primaryButtonProc](const ContentDialog& contentDialog,
-					const ContentDialogButtonClickEventArgs& eventArgs) {
-				// Call proc
-				primaryButtonProc();
-			});
+			[primaryButtonProc](const ContentDialog& contentDialog, const ContentDialogButtonClickEventArgs& eventArgs) { primaryButtonProc(); });
 
 	SecondaryButtonText(secondaryButtonLabel.getOSString());
 	SecondaryButtonClick(
-			[secondaryButtonProc](const ContentDialog& contentDialog,
-					const ContentDialogButtonClickEventArgs& eventArgs) {
-				// Call proc
-				secondaryButtonProc();
-			});
+			[secondaryButtonProc](const ContentDialog& contentDialog, const ContentDialogButtonClickEventArgs& eventArgs) { secondaryButtonProc(); });
 }
 
 // MARK: Class methods
