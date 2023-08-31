@@ -4,20 +4,20 @@
 
 #include "ProgressContentDialog.h"
 
+#include <winrt/Microsoft.UI.Xaml.h>
+#include <winrt/Microsoft.UI.Xaml.Controls.h>
+#include <winrt/Microsoft.UI.Xaml.Controls.Primitives.h>
 #include <winrt/Windows.Foundation.h>
 #include <winrt/Windows.Foundation.Collections.h>
+#include <winrt/Windows.System.h>
 #include <winrt/Windows.System.Threading.h>
 #include <winrt/Windows.System.Threading.Core.h>
-#include <winrt/Windows.UI.Core.h>
-#include <winrt/Windows.UI.Xaml.h>
-#include <winrt/Windows.UI.Xaml.Controls.h>
-#include <winrt/Windows.UI.Xaml.Controls.Primitives.h>
 
+using namespace winrt::Microsoft::UI::Xaml;
+using namespace winrt::Microsoft::UI::Xaml::Controls;
 using namespace winrt::Windows::Foundation;
+using namespace winrt::Windows::System;
 using namespace winrt::Windows::System::Threading;
-using namespace winrt::Windows::UI::Core;
-using namespace winrt::Windows::UI::Xaml;
-using namespace winrt::Windows::UI::Xaml::Controls;
 
 //----------------------------------------------------------------------------------------------------------------------
 //----------------------------------------------------------------------------------------------------------------------
@@ -26,16 +26,16 @@ using namespace winrt::Windows::UI::Xaml::Controls;
 class ProgressContentDialogInternals : public TCopyOnWriteReferenceCountable<ProgressContentDialogInternals> {
 	public:
 		ProgressContentDialogInternals(ProgressContentDialog& progressContentDialog, const TextBlock& messageTextBlock,
-				const ProgressBar& progressBar, const CoreDispatcher& dispatcher) :
+				const ProgressBar& progressBar, const DispatcherQueue& dispatcherQueue) :
 			mContentDialog(progressContentDialog),
-					mIsCancelled(false), mDispatcher(dispatcher),
+					mIsCancelled(false), mDispatcherQueue(dispatcherQueue),
 					mMessageTextBlock(messageTextBlock), mProgressBar(progressBar)
 			{}
 
 		ContentDialog	mContentDialog;
 
 		bool			mIsCancelled;
-		CoreDispatcher	mDispatcher;
+		DispatcherQueue	mDispatcherQueue;
 
 		TextBlock		mMessageTextBlock;
 		ProgressBar		mProgressBar;
@@ -71,7 +71,9 @@ ProgressContentDialog::ProgressContentDialog() : ContentDialog()
 	Content(stackPanel);
 
 	// Setup internals
-	mInternals = new ProgressContentDialogInternals(*this, messageTextBlock, progressBar, Dispatcher());
+	mInternals =
+			new ProgressContentDialogInternals(*this, messageTextBlock, progressBar,
+					DispatcherQueue::GetForCurrentThread());
 }
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -95,7 +97,7 @@ CProgress::UpdateInfo ProgressContentDialog::getProgressUpdateInfo() const
 		const	ProgressContentDialogInternals&	internals = *((ProgressContentDialogInternals*) userData);
 
 		// Update UI
-		internals.mDispatcher.RunAsync(CoreDispatcherPriority::Normal, [=, &internals]() {
+		internals.mDispatcherQueue.TryEnqueue([=, &internals]() {
 			// Update UI
 			internals.mMessageTextBlock.Text(message.getOSString());
 
@@ -130,7 +132,7 @@ void ProgressContentDialog::perform(const I<CProgress>& progress, Proc proc, Can
 		void*	result = proc(progress);
 
 		// Switch to UI
-		internals->mDispatcher.RunAsync(CoreDispatcherPriority::Normal, [=]() {
+		internals->mDispatcherQueue.TryEnqueue([=]() {
 			// Hide
 			internals->mContentDialog.Hide();
 

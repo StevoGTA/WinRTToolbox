@@ -10,11 +10,11 @@
 
 #undef Delete
 
-#include "winrt/Windows.UI.Xaml.Controls.h"
+#include "winrt/Microsoft.UI.Xaml.Controls.h"
 
 #define Delete(x)	{ delete x; x = nil; }
 
-using namespace winrt::Windows::UI::Xaml::Controls;
+using namespace winrt::Microsoft::UI::Xaml::Controls;
 
 //----------------------------------------------------------------------------------------------------------------------
 // MARK: MessageContentDialog
