@@ -4,6 +4,8 @@
 
 #include "ProgressContentDialog.h"
 
+#include "CReferenceCountable.h"
+
 #include <winrt/Microsoft.UI.Xaml.h>
 #include <winrt/Microsoft.UI.Xaml.Controls.h>
 #include <winrt/Microsoft.UI.Xaml.Controls.Primitives.h>
@@ -23,13 +25,14 @@ using namespace winrt::Windows::System::Threading;
 //----------------------------------------------------------------------------------------------------------------------
 // MARK: ProgressContentDialogInternals
 
-class ProgressContentDialogInternals : public TCopyOnWriteReferenceCountable<ProgressContentDialogInternals> {
+class ProgressContentDialogInternals : public TReferenceCountableAutoDelete<ProgressContentDialogInternals> {
 	public:
 		ProgressContentDialogInternals(ProgressContentDialog& progressContentDialog, const TextBlock& messageTextBlock,
 				const ProgressBar& progressBar, const DispatcherQueue& dispatcherQueue) :
-			mContentDialog(progressContentDialog),
-					mIsCancelled(false), mDispatcherQueue(dispatcherQueue),
-					mMessageTextBlock(messageTextBlock), mProgressBar(progressBar)
+			TReferenceCountableAutoDelete(),
+					mContentDialog(progressContentDialog),
+							mIsCancelled(false), mDispatcherQueue(dispatcherQueue),
+							mMessageTextBlock(messageTextBlock), mProgressBar(progressBar)
 			{}
 
 		ContentDialog	mContentDialog;
