@@ -11,14 +11,13 @@
 #include <winrt/Microsoft.UI.Xaml.Controls.Primitives.h>
 #include <winrt/Windows.Foundation.h>
 #include <winrt/Windows.Foundation.Collections.h>
-#include <winrt/Windows.System.h>
 #include <winrt/Windows.System.Threading.h>
 #include <winrt/Windows.System.Threading.Core.h>
 
+using namespace winrt::Microsoft::UI::Dispatching;
 using namespace winrt::Microsoft::UI::Xaml;
 using namespace winrt::Microsoft::UI::Xaml::Controls;
 using namespace winrt::Windows::Foundation;
-using namespace winrt::Windows::System;
 using namespace winrt::Windows::System::Threading;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -51,7 +50,8 @@ class ProgressContentDialogInternals : public TReferenceCountableAutoDelete<Prog
 // MARK: Lifecycle methods
 
 //----------------------------------------------------------------------------------------------------------------------
-ProgressContentDialog::ProgressContentDialog() : ContentDialog()
+ProgressContentDialog::ProgressContentDialog(Xaml::XamlRoot xamlRoot,
+		const Dispatching::DispatcherQueue& dispatcherQueue) : ContentDialog()
 //----------------------------------------------------------------------------------------------------------------------
 {
 	// Setup UI
@@ -72,11 +72,10 @@ ProgressContentDialog::ProgressContentDialog() : ContentDialog()
 	stackPanel.Children().Append(progressBar);
 
 	Content(stackPanel);
+	XamlRoot(xamlRoot);
 
 	// Setup internals
-	mInternals =
-			new ProgressContentDialogInternals(*this, messageTextBlock, progressBar,
-					DispatcherQueue::GetForCurrentThread());
+	mInternals = new ProgressContentDialogInternals(*this, messageTextBlock, progressBar, dispatcherQueue);
 }
 
 //----------------------------------------------------------------------------------------------------------------------

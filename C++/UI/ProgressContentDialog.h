@@ -11,9 +11,11 @@
 #undef Delete
 
 #include "winrt/Microsoft.UI.Xaml.Controls.h"
+#include "winrt/Microsoft.UI.Dispatching.h"
 
 #define Delete(x)	{ delete x; x = nil; }
 
+using namespace winrt::Microsoft::UI;
 using namespace winrt::Microsoft::UI::Xaml::Controls;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -21,7 +23,7 @@ using namespace winrt::Microsoft::UI::Xaml::Controls;
 
 class ProgressContentDialogInternals;
 class ProgressContentDialog : public ContentDialog {
-	// Types
+	// Procs
 	typedef	std::function<void*(const I<CProgress>& progress)>	Proc;
 	typedef	std::function<void()>								CancelProc;
 	typedef	std::function<void(void* result)>					CompletionProc;
@@ -29,7 +31,8 @@ class ProgressContentDialog : public ContentDialog {
 	// Methods
 	public:
 								// Lifecycle methods
-								ProgressContentDialog();
+								ProgressContentDialog(Xaml::XamlRoot xamlRoot,
+										const Dispatching::DispatcherQueue& dispatcherQueue);
 								~ProgressContentDialog();
 
 								// Instance methods
