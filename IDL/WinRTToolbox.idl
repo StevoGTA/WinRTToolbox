@@ -1,5 +1,5 @@
 //----------------------------------------------------------------------------------------------------------------------
-//	DropTargetControl.idl			©2023 Stevo Brock		All rights reserved.
+//	WinRT Toolbox.idl			©2023 Stevo Brock		All rights reserved.
 //----------------------------------------------------------------------------------------------------------------------
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -7,10 +7,8 @@
 namespace WinRTToolbox {
 
 	//------------------------------------------------------------------------------------------------------------------
-	// MARK: DropTargetControl
-	[default_interface]
-	runtimeclass DropTargetControl : Microsoft.UI.Xaml.Controls.UserControl {
-		// Methods
-		DropTargetControl();
-	}
+	// Delegates
+	delegate	Double	DoubleProvider(Object sender, Object context);
+	delegate	Single	FloatProvider(Object sender, Object context);
+	delegate	String	StringProvider(Object sender, Object context);
 }
