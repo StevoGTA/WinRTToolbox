@@ -1,10 +1,9 @@
 //----------------------------------------------------------------------------------------------------------------------
-//	IStorageItemHelper.cpp			©2021 Stevo Brock	All rights reserved.
+//	SFoldersFiles+Extensions.cpp			©2021 Stevo Brock	All rights reserved.
 //----------------------------------------------------------------------------------------------------------------------
 
-#include "IStorageItemHelper.h"
+#include "SFoldersFiles+Extensions.h"
 
-using namespace winrt::Windows::Foundation::Collections;
 using namespace winrt::Windows::Storage;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -13,7 +12,7 @@ using namespace winrt::Windows::Storage;
 // MARK: Class methods
 
 //----------------------------------------------------------------------------------------------------------------------
-SFoldersFiles IStorageItemHelper::getFoldersFiles(const IVectorView<IStorageItem>& storageItems)
+SFoldersFiles SFoldersFilexEx::getFoldersFiles(const IStorageItemVectorView& storageItems)
 //----------------------------------------------------------------------------------------------------------------------
 {
 	// Compose folders and files
