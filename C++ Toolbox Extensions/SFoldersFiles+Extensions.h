@@ -5,7 +5,6 @@
 #pragma once
 
 #include "SFoldersFiles.h"
-
 #include "TInspectable.h"
 
 #include "winrt\Windows.Foundation.Collections.h"

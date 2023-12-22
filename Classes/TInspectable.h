@@ -9,7 +9,7 @@
 using namespace winrt;
 
 //----------------------------------------------------------------------------------------------------------------------
-// MARK: TVInspectable
+// MARK: TVInspectable (Value Inspectable)
 
 template <typename T, typename D> struct TVInspectable : public implements<T, Windows::Foundation::IInspectable> {
 	// Methods
@@ -27,7 +27,7 @@ template <typename T, typename D> struct TVInspectable : public implements<T, Wi
 };
 
 //----------------------------------------------------------------------------------------------------------------------
-// MARK: - TRInspectable
+// MARK: - TRInspectable (Reference Inspectable)
 
 template <typename T, typename D> struct TRInspectable : public implements<T, Windows::Foundation::IInspectable> {
 	// Methods
@@ -45,7 +45,7 @@ template <typename T, typename D> struct TRInspectable : public implements<T, Wi
 };
 
 //----------------------------------------------------------------------------------------------------------------------
-// MARK: - TCRInspectable
+// MARK: - TCRInspectable (const Reference Inspectable)
 
 template <typename T, typename D> struct TCRInspectable : public implements<T, Windows::Foundation::IInspectable> {
 	// Methods
