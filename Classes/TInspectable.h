@@ -15,7 +15,7 @@ template <typename T, typename D> struct TVInspectable : public implements<T, Wi
 	// Methods
 	public:
 			// Lifecycle methods
-			TVInspectable<T, D>(D d) : implements<T, Windows::Foundation::IInspectable>(), mD(d) {}
+			TVInspectable<T, D>(const D& d) : implements<T, Windows::Foundation::IInspectable>(), mD(d) {}
 
 			// Instance methods
 		D	GetValue() const
