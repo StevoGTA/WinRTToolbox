@@ -27,6 +27,24 @@ template <typename T, typename D> struct TVInspectable : public implements<T, Wi
 };
 
 //----------------------------------------------------------------------------------------------------------------------
+// MARK: TCVInspectable (const Value Inspectable)
+
+template <typename T, typename D> struct TCVInspectable : public implements<T, Windows::Foundation::IInspectable> {
+	// Methods
+	public:
+					// Lifecycle methods
+				TCVInspectable<T, D>(const D& d) : implements<T, Windows::Foundation::IInspectable>(), mD(d) {}
+
+					// Instance methods
+		const	D	GetValue() const
+						{ return mD; }
+
+	// Properties
+	private:
+		D	mD;
+};
+
+//----------------------------------------------------------------------------------------------------------------------
 // MARK: - TRInspectable (Reference Inspectable)
 
 template <typename T, typename D> struct TRInspectable : public implements<T, Windows::Foundation::IInspectable> {
