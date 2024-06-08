@@ -33,7 +33,7 @@ template <typename T, typename D> struct TCVInspectable : public implements<T, W
 	// Methods
 	public:
 					// Lifecycle methods
-				TCVInspectable<T, D>(const D& d) : implements<T, Windows::Foundation::IInspectable>(), mD(d) {}
+					TCVInspectable<T, D>(const D& d) : implements<T, Windows::Foundation::IInspectable>(), mD(d) {}
 
 					// Instance methods
 		const	D	GetValue() const
