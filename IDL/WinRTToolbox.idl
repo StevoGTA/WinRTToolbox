@@ -1,5 +1,5 @@
 //----------------------------------------------------------------------------------------------------------------------
-//	WinRT Toolbox.idl			©2023 Stevo Brock		All rights reserved.
+//	WinRTToolbox.idl			©2023 Stevo Brock		All rights reserved.
 //----------------------------------------------------------------------------------------------------------------------
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -10,6 +10,9 @@ namespace WinRTToolbox {
 	// Delegates
 	delegate	Double	DoubleProvider(Object sender, Object context);
 	delegate	Object	ObjectProvider(Object sender, Object context);
-	delegate	Single	FloatProvider(Object sender, Object context);
+	delegate	Single	SingleProvider(Object sender, Object context);
 	delegate	String	StringProvider(Object sender, Object context);
+
+	delegate	void	UInt32Handler(Object sender, UInt32 value);
+	delegate	void	ObjectHandler(Object sender, Object object);
 }
