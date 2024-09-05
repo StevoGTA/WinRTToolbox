@@ -1,0 +1,21 @@
+//----------------------------------------------------------------------------------------------------------------------
+//	BindingProvider.idl			©2024 Stevo Brock		All rights reserved.
+//----------------------------------------------------------------------------------------------------------------------
+
+//----------------------------------------------------------------------------------------------------------------------
+// MARK: WinRTToolbox namespace
+namespace WinRTToolbox {
+
+	//------------------------------------------------------------------------------------------------------------------
+	// Binding Adapter
+	[bindable]
+	[default_interface]
+	runtimeclass BindingProvider : Microsoft.UI.Xaml.Data.INotifyPropertyChanged {
+				// Lifecycle Methods
+				BindingProvider(Object beindingProviderAdapter);
+
+				// Properties
+		Boolean	Boolean1;
+		String	String1;
+	}
+}
