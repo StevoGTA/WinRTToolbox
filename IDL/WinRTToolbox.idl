@@ -13,6 +13,6 @@ namespace WinRTToolbox {
 	delegate	Single	SingleProvider(Object sender, Object context);
 	delegate	String	StringProvider(Object sender, Object context);
 
-	delegate	void	UInt32Handler(Object sender, UInt32 value);
 	delegate	void	ObjectHandler(Object sender, Object object);
+	delegate	void	UInt32Handler(Object sender, UInt32 value);
 }
