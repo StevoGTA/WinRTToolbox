@@ -11,71 +11,71 @@ using namespace winrt;
 //----------------------------------------------------------------------------------------------------------------------
 // MARK: TVInspectable (Value Inspectable)
 
-template <typename T, typename D> struct TVInspectable : public implements<T, Windows::Foundation::IInspectable> {
+template <typename T, typename V> struct TVInspectable : public implements<T, Windows::Foundation::IInspectable> {
 	// Methods
 	public:
 			// Lifecycle methods
-			TVInspectable<T, D>(const D& d) : implements<T, Windows::Foundation::IInspectable>(), mD(d) {}
+			TVInspectable<T, V>(const V& v) : implements<T, Windows::Foundation::IInspectable>(), mV(v) {}
 
 			// Instance methods
-		D	GetValue() const
-				{ return mD; }
+		V	GetValue() const
+				{ return mV; }
 
 	// Properties
 	private:
-		D	mD;
+		V	mV;
 };
 
 //----------------------------------------------------------------------------------------------------------------------
 // MARK: TCVInspectable (const Value Inspectable)
 
-template <typename T, typename D> struct TCVInspectable : public implements<T, Windows::Foundation::IInspectable> {
+template <typename T, typename V> struct TCVInspectable : public implements<T, Windows::Foundation::IInspectable> {
 	// Methods
 	public:
 					// Lifecycle methods
-					TCVInspectable<T, D>(const D& d) : implements<T, Windows::Foundation::IInspectable>(), mD(d) {}
+					TCVInspectable<T, V>(const V& v) : implements<T, Windows::Foundation::IInspectable>(), mV(v) {}
 
 					// Instance methods
-		const	D	GetValue() const
-						{ return mD; }
+		const	V	GetValue() const
+						{ return mV; }
 
 	// Properties
 	private:
-		D	mD;
+		V	mV;
 };
 
 //----------------------------------------------------------------------------------------------------------------------
 // MARK: - TRInspectable (Reference Inspectable)
 
-template <typename T, typename D> struct TRInspectable : public implements<T, Windows::Foundation::IInspectable> {
+template <typename T, typename R> struct TRInspectable : public implements<T, Windows::Foundation::IInspectable> {
 	// Methods
 	public:
 			// Lifecycle methods
-			TRInspectable<T, D>(D& d) : implements<T, Windows::Foundation::IInspectable>(), mD(d) {}
+			TRInspectable<T, R>(R& r) : implements<T, Windows::Foundation::IInspectable>(), mR(r) {}
 
 			// Instance methods
-		D&	GetValue() const
-				{ return mD; }
+		R&	GetReference() const
+				{ return mR; }
 
 	// Properties
 	private:
-		D&	mD;
+		R&	mR;
 };
 
 //----------------------------------------------------------------------------------------------------------------------
 // MARK: - TCRInspectable (const Reference Inspectable)
 
-template <typename T, typename D> struct TCRInspectable : public implements<T, Windows::Foundation::IInspectable> {
+template <typename T, typename R> struct TCRInspectable : public implements<T, Windows::Foundation::IInspectable> {
 	// Methods
 	public:
 					// Lifecycle methods
-					TCRInspectable<T, D>(const D& d) : implements<T, Windows::Foundation::IInspectable>(), mD(d) {}
+					TCRInspectable<T, R>(const R& r) : implements<T, Windows::Foundation::IInspectable>(), mR(r) {}
 
 					// Instance methods
-		const	D&	GetValue() const
-						{ return mD; }
+		const	R&	GetReference() const
+						{ return mR; }
 
 	// Properties
 	private:
-		const	D&	mD;
+		const	R&	mR;
 };
