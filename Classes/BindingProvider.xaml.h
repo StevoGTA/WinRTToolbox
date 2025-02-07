@@ -31,16 +31,7 @@ namespace winrt::WinRTToolbox {
 			virtual	void	setString1(hstring value) {}
 	};
 
-	 // MARK: - BindingProviderAdapterCVInspectable
-
-	struct BindingProviderAdapterCVInspectable :
-			public TCVInspectable<BindingProviderAdapterCVInspectable, I<BindingProviderAdapter> > {
-		// Methods
-		public:
-			BindingProviderAdapterCVInspectable(I<BindingProviderAdapter>& bindingProviderAdapter) :
-				TCVInspectable<BindingProviderAdapterCVInspectable, I<BindingProviderAdapter> >(bindingProviderAdapter)
-				{}
-	};
+	DEFINE_TCVInspectable(BindingProviderAdapterCVInspectable, I<BindingProviderAdapter>);
 }
 
 //----------------------------------------------------------------------------------------------------------------------

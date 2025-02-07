@@ -23,14 +23,4 @@ class SFoldersFilexEx {
 		static	SFoldersFiles	getFoldersFiles(const IStorageItemVectorView& storageItems);
 };
 
-//----------------------------------------------------------------------------------------------------------------------
-// MARK: - FoldersFilesVInspectable
-
-struct FoldersFilesVInspectable : public TVInspectable<FoldersFilesVInspectable, SFoldersFiles> {
-	// Methods
-	public:
-		// Lifecycle methods
-		FoldersFilesVInspectable(const SFoldersFiles& value) :
-			TVInspectable<FoldersFilesVInspectable, SFoldersFiles>(value)
-			{}
-};
+DEFINE_TCVInspectable(FoldersFilesCVInspectable, SFoldersFiles);

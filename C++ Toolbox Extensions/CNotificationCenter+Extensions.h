@@ -7,13 +7,4 @@
 #include "CNotificationCenter.h"
 #include "TInspectable.h"
 
-//----------------------------------------------------------------------------------------------------------------------
-// MARK: NotificationCenterRInspectable
-
-struct NotificationCenterRInspectable : public TRInspectable<NotificationCenterRInspectable, CNotificationCenter> {
-	// Methods
-	public:
-		NotificationCenterRInspectable(CNotificationCenter& value) :
-			TRInspectable<NotificationCenterRInspectable, CNotificationCenter>(value)
-			{}
-};
+DEFINE_TRInspectable(NotificationCenterRInspectable, CNotificationCenter);
