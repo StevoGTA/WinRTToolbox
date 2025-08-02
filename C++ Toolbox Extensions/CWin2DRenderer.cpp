@@ -237,16 +237,16 @@ void CWin2DRenderer::shadeRect(const S2DRectF32& rect, const S2DPointF32& shadeS
 											{
 												{0.0f,
 														ColorHelper::FromArgb(
-																startColor.getRGBValues().getAlpha() * 255.0,
-																startColor.getRGBValues().getRed() * 255.0,
-																startColor.getRGBValues().getGreen() * 255.0,
-																startColor.getRGBValues().getBlue() * 255.0)},
+																(uint8_t) (startColor.getRGBValues().getAlpha() * 255.0),
+																(uint8_t)(startColor.getRGBValues().getRed() * 255.0),
+																(uint8_t)(startColor.getRGBValues().getGreen() * 255.0),
+																(uint8_t)(startColor.getRGBValues().getBlue() * 255.0))},
 												{1.0f,
 														ColorHelper::FromArgb(
-																endColor.getRGBValues().getAlpha() * 255.0,
-																endColor.getRGBValues().getRed() * 255.0,
-																endColor.getRGBValues().getGreen() * 255.0,
-																endColor.getRGBValues().getBlue() * 255.0)},
+																(uint8_t)(endColor.getRGBValues().getAlpha() * 255.0),
+																(uint8_t)(endColor.getRGBValues().getRed() * 255.0),
+																(uint8_t)(endColor.getRGBValues().getGreen() * 255.0),
+																(uint8_t)(endColor.getRGBValues().getBlue() * 255.0))},
 											};
 	CanvasLinearGradientBrush	canvasLinearGradientBrush(mInternals->mCanvasDrawingSession, canvasGradientStops);
 	canvasLinearGradientBrush.StartPoint({shadeStartPoint.mX, shadeStartPoint.mY});
