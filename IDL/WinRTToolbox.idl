@@ -8,6 +8,7 @@ namespace WinRTToolbox {
 
 	//------------------------------------------------------------------------------------------------------------------
 	// Delegates
+	delegate	Boolean	BooleanProvider(Object sender, Object context);
 	delegate	Double	DoubleProvider(Object sender, Object context);
 	delegate	Object	ObjectProvider(Object sender, Object context);
 	delegate	Single	SingleProvider(Object sender, Object context);
