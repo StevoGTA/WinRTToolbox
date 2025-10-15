@@ -21,6 +21,7 @@ class SFoldersFilexEx {
 	public:
 								// Class methods
 		static	SFoldersFiles	getFoldersFiles(const IStorageItemVectorView& storageItems);
+		static	TArray<CFile>	getFiles(const IStorageItemVectorView& storageItems);
 };
 
 DEFINE_TCVInspectable(FoldersFilesCVInspectable, SFoldersFiles);

@@ -30,3 +30,19 @@ SFoldersFiles SFoldersFilexEx::getFoldersFiles(const IStorageItemVectorView& sto
 
 	return SFoldersFiles(folders, files);
 }
+
+//----------------------------------------------------------------------------------------------------------------------
+TArray<CFile> SFoldersFilexEx::getFiles(const IStorageItemVectorView& storageItems)
+//----------------------------------------------------------------------------------------------------------------------
+{
+	// Compose files
+	TNArray<CFile>	files;
+	for (auto const& storageItem : storageItems) {
+		// Check if not directory
+		if (!((uint32_t)storageItem.Attributes() & (uint32_t)FileAttributes::Directory))
+			// File
+			files += CFile(CFilesystemPath(CString(storageItem.Path().data())));
+	}
+
+	return files;
+}

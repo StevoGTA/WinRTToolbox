@@ -7,4 +7,5 @@
 #include "CData.h"
 #include "TInspectable.h"
 
-DEFINE_TCRInspectable(DataCRInspectable, CData);
+DEFINE_TCVInspectable(DataCVInspectable, CData);
+DEFINE_TCVInspectable(OVDataCVInspectable, OV<CData>);
