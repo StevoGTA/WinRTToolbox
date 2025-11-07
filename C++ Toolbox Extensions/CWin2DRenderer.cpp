@@ -45,8 +45,7 @@ struct S2DPathIterateInfo {
 class CWin2DRenderer::Internals {
 	public:
 						Internals(const CanvasDrawingSession& canvasDrawingSession) :
-							mCanvasDrawingSession(canvasDrawingSession),
-									mFillColor(Colors::Black()), mStrokeColor(Colors::Black())
+							mCanvasDrawingSession(canvasDrawingSession)
 							{}
 
 		static	void	pathSegmentMoveTo32(const S2DPointF32& point, S2DPathIterateInfo* pathIterateInfo)
@@ -128,8 +127,8 @@ class CWin2DRenderer::Internals {
 
 		CanvasDrawingSession	mCanvasDrawingSession;
 
-		Color					mFillColor;
-		Color					mStrokeColor;
+		OV<Color>				mFillColor;
+		OV<Color>				mStrokeColor;
 };
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -159,12 +158,12 @@ void CWin2DRenderer::setFillColor(const CColor& color)
 //----------------------------------------------------------------------------------------------------------------------
 {
 	// Update
-	mInternals->mFillColor =
+	mInternals->mFillColor.setValue(
 			ColorHelper::FromArgb(
 					(uint8_t) (color.getRGBValues().getAlpha() * 255.0),
 					(uint8_t) (color.getRGBValues().getRed() * 255.0),
 					(uint8_t) (color.getRGBValues().getGreen() * 255.0),
-					(uint8_t) (color.getRGBValues().getBlue() * 255.0));
+					(uint8_t) (color.getRGBValues().getBlue() * 255.0)));
 }
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -172,12 +171,12 @@ void CWin2DRenderer::setStrokeColor(const CColor& color)
 //----------------------------------------------------------------------------------------------------------------------
 {
 	// Update
-	mInternals->mStrokeColor =
+	mInternals->mStrokeColor.setValue(
 			ColorHelper::FromArgb(
 					(uint8_t) (color.getRGBValues().getAlpha() * 255.0),
 					(uint8_t) (color.getRGBValues().getRed() * 255.0),
 					(uint8_t) (color.getRGBValues().getGreen() * 255.0),
-					(uint8_t) (color.getRGBValues().getBlue() * 255.0));
+					(uint8_t) (color.getRGBValues().getBlue() * 255.0)));
 }
 
 // MARK: T2DRenderer methods
@@ -187,11 +186,16 @@ void CWin2DRenderer::strokeLine(const S2DPointF32& startPoint, const S2DPointF32
 		Float32 lineWidth) const
 //----------------------------------------------------------------------------------------------------------------------
 {
+	// Preflight
+	AssertFailIf(!mInternals->mStrokeColor.hasValue());
+	if (!mInternals->mStrokeColor.hasValue())
+		return;
+
 	// Stroke line
 	mInternals->mCanvasDrawingSession.Antialiasing(
 			antiAlias ? CanvasAntialiasing::Antialiased : CanvasAntialiasing::Aliased);
 	mInternals->mCanvasDrawingSession.DrawLine(startPoint.mX, startPoint.mY, endPoint.mX, endPoint.mY,
-			mInternals->mStrokeColor, lineWidth);
+			*mInternals->mStrokeColor, lineWidth);
 }
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -199,6 +203,10 @@ void CWin2DRenderer::strokeLines(const S2DPointF32* points, UInt32 count, bool a
 //----------------------------------------------------------------------------------------------------------------------
 {
 	// Preflight
+	AssertFailIf(!mInternals->mStrokeColor.hasValue());
+	if (!mInternals->mStrokeColor.hasValue())
+		return;
+
 	AssertNotNil(points);
 	if (points == nil)
 		return;
@@ -215,16 +223,21 @@ void CWin2DRenderer::strokeLines(const S2DPointF32* points, UInt32 count, bool a
 	for (UInt32 i = 0; i < count - 1; i++)
 		// Draw line
 		mInternals->mCanvasDrawingSession.DrawLine(points[i].mX, points[i].mY, points[i + 1].mX, points[i + 1].mY,
-			mInternals->mStrokeColor, lineWidth);
+			*mInternals->mStrokeColor, lineWidth);
 }
 
 //----------------------------------------------------------------------------------------------------------------------
 void CWin2DRenderer::fillRect(const S2DRectF32& rect) const
 //----------------------------------------------------------------------------------------------------------------------
 {
+	// Preflight
+	AssertFailIf(!mInternals->mFillColor.hasValue());
+	if (!mInternals->mFillColor.hasValue())
+		return;
+
 	// Fill rect
 	mInternals->mCanvasDrawingSession.FillRectangle(rect.getMinX(), rect.getMinY(), rect.getWidth(), rect.getHeight(),
-			mInternals->mFillColor);
+			*mInternals->mFillColor);
 }
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -238,15 +251,15 @@ void CWin2DRenderer::shadeRect(const S2DRectF32& rect, const S2DPointF32& shadeS
 												{0.0f,
 														ColorHelper::FromArgb(
 																(uint8_t) (startColor.getRGBValues().getAlpha() * 255.0),
-																(uint8_t)(startColor.getRGBValues().getRed() * 255.0),
-																(uint8_t)(startColor.getRGBValues().getGreen() * 255.0),
-																(uint8_t)(startColor.getRGBValues().getBlue() * 255.0))},
+																(uint8_t) (startColor.getRGBValues().getRed() * 255.0),
+																(uint8_t) (startColor.getRGBValues().getGreen() * 255.0),
+																(uint8_t) (startColor.getRGBValues().getBlue() * 255.0))},
 												{1.0f,
 														ColorHelper::FromArgb(
-																(uint8_t)(endColor.getRGBValues().getAlpha() * 255.0),
-																(uint8_t)(endColor.getRGBValues().getRed() * 255.0),
-																(uint8_t)(endColor.getRGBValues().getGreen() * 255.0),
-																(uint8_t)(endColor.getRGBValues().getBlue() * 255.0))},
+																(uint8_t) (endColor.getRGBValues().getAlpha() * 255.0),
+																(uint8_t) (endColor.getRGBValues().getRed() * 255.0),
+																(uint8_t) (endColor.getRGBValues().getGreen() * 255.0),
+																(uint8_t) (endColor.getRGBValues().getBlue() * 255.0))},
 											};
 	CanvasLinearGradientBrush	canvasLinearGradientBrush(mInternals->mCanvasDrawingSession, canvasGradientStops);
 	canvasLinearGradientBrush.StartPoint({shadeStartPoint.mX, shadeStartPoint.mY});
@@ -261,9 +274,14 @@ void CWin2DRenderer::shadeRect(const S2DRectF32& rect, const S2DPointF32& shadeS
 void CWin2DRenderer::strokeRect(const S2DRectF32& rect) const
 //----------------------------------------------------------------------------------------------------------------------
 {
+	// Preflight
+	AssertFailIf(!mInternals->mStrokeColor.hasValue());
+	if (!mInternals->mStrokeColor.hasValue())
+		return;
+
 	// Draw rect
 	mInternals->mCanvasDrawingSession.DrawRectangle(rect.getMinX(), rect.getMinY(), rect.getWidth(), rect.getHeight(),
-			mInternals->mStrokeColor);
+			*mInternals->mStrokeColor);
 }
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -271,6 +289,11 @@ void CWin2DRenderer::strokePath(const S2DPath32& path, Float32 lineWidth,
 		const S2DAffineTransformF32& affineTransform) const
 //----------------------------------------------------------------------------------------------------------------------
 {
+	// Preflight
+	AssertFailIf(!mInternals->mStrokeColor.hasValue());
+	if (!mInternals->mStrokeColor.hasValue())
+		return;
+
 	// Setup
 	CanvasPathBuilder	canvasPathBuilder(mInternals->mCanvasDrawingSession.Device());
 
@@ -284,7 +307,7 @@ void CWin2DRenderer::strokePath(const S2DPath32& path, Float32 lineWidth,
 
 	// Draw
 	mInternals->mCanvasDrawingSession.DrawGeometry(CanvasGeometry::CreatePath(canvasPathBuilder),
-			mInternals->mStrokeColor, lineWidth);
+			*mInternals->mStrokeColor, lineWidth);
 }
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -304,7 +327,7 @@ S2DSizeF32 CWin2DRenderer::getTextSize(const CString& string, const Font& font) 
 
 //----------------------------------------------------------------------------------------------------------------------
 void CWin2DRenderer::strokeText(const CString& string, const Font& font, const S2DPointF32& point,
-		TextPositioning textPositioning) const
+		TextPositioning textPositioning, const OV<Float32>& outlineWidth) const
 //----------------------------------------------------------------------------------------------------------------------
 {
 	// Setup
