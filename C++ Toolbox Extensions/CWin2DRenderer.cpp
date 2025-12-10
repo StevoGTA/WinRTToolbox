@@ -48,6 +48,15 @@ class CWin2DRenderer::Internals {
 							mCanvasDrawingSession(canvasDrawingSession)
 							{}
 
+		static	Color	colorFor(const CColor& color)
+							{
+								return ColorHelper::FromArgb(
+										(uint8_t) (color.getRGBValues().getAlpha() * 255.0),
+										(uint8_t) (color.getRGBValues().getRed() * 255.0),
+										(uint8_t) (color.getRGBValues().getGreen() * 255.0),
+										(uint8_t) (color.getRGBValues().getBlue() * 255.0));
+							}
+
 		static	void	pathSegmentMoveTo32(const S2DPointF32& point, S2DPathIterateInfo* pathIterateInfo)
 							{
 								// Setup
@@ -158,12 +167,7 @@ void CWin2DRenderer::setFillColor(const CColor& color)
 //----------------------------------------------------------------------------------------------------------------------
 {
 	// Update
-	mInternals->mFillColor.setValue(
-			ColorHelper::FromArgb(
-					(uint8_t) (color.getRGBValues().getAlpha() * 255.0),
-					(uint8_t) (color.getRGBValues().getRed() * 255.0),
-					(uint8_t) (color.getRGBValues().getGreen() * 255.0),
-					(uint8_t) (color.getRGBValues().getBlue() * 255.0)));
+	mInternals->mFillColor.setValue(Internals::colorFor(color));
 }
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -171,12 +175,7 @@ void CWin2DRenderer::setStrokeColor(const CColor& color)
 //----------------------------------------------------------------------------------------------------------------------
 {
 	// Update
-	mInternals->mStrokeColor.setValue(
-			ColorHelper::FromArgb(
-					(uint8_t) (color.getRGBValues().getAlpha() * 255.0),
-					(uint8_t) (color.getRGBValues().getRed() * 255.0),
-					(uint8_t) (color.getRGBValues().getGreen() * 255.0),
-					(uint8_t) (color.getRGBValues().getBlue() * 255.0)));
+	mInternals->mStrokeColor.setValue(Internals::colorFor(color));
 }
 
 // MARK: T2DRenderer methods
@@ -326,8 +325,8 @@ S2DSizeF32 CWin2DRenderer::getTextSize(const CString& string, const Font& font) 
 }
 
 //----------------------------------------------------------------------------------------------------------------------
-void CWin2DRenderer::strokeText(const CString& string, const Font& font, const S2DPointF32& point,
-		TextPositioning textPositioning, const OV<Float32>& outlineWidth) const
+void CWin2DRenderer::drawText(const CString& string, const Font& font, const S2DPointF32& point,
+		const CColor& color, TextPositioning textPositioning, const OV<OutlineInfo>& outlineInfo) const
 //----------------------------------------------------------------------------------------------------------------------
 {
 	// Setup
@@ -400,5 +399,6 @@ void CWin2DRenderer::strokeText(const CString& string, const Font& font, const S
 	}
 
 	// Draw text
-	mInternals->mCanvasDrawingSession.DrawText(string.getOSString(), x, y, mInternals->mStrokeColor, canvasTextFormat);
+	mInternals->mCanvasDrawingSession.DrawText(string.getOSString(), x, y, Internals::colorFor(color),
+			canvasTextFormat);
 }
