@@ -5,6 +5,7 @@
 #pragma once
 
 #include "TInspectable.h"
+#include "TWrappers.h"
 
 DEFINE_TCVInspectable(OVUInt8CVInspectable, OV<UInt8>);
 DEFINE_TCVInspectable(OVUInt16CVInspectable, OV<UInt16>);
