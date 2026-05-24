@@ -12,7 +12,7 @@ using namespace winrt::Windows::Storage;
 // MARK: Class methods
 
 //----------------------------------------------------------------------------------------------------------------------
-SFoldersFiles SFoldersFilexEx::getFoldersFiles(const IStorageItemVectorView& storageItems)
+SFoldersFiles SFoldersFilesEx::getFoldersFiles(const IStorageItemVectorView& storageItems)
 //----------------------------------------------------------------------------------------------------------------------
 {
 	// Compose folders and files
@@ -32,7 +32,7 @@ SFoldersFiles SFoldersFilexEx::getFoldersFiles(const IStorageItemVectorView& sto
 }
 
 //----------------------------------------------------------------------------------------------------------------------
-TArray<CFile> SFoldersFilexEx::getFiles(const IStorageItemVectorView& storageItems)
+TArray<CFile> SFoldersFilesEx::getFiles(const IStorageItemVectorView& storageItems)
 //----------------------------------------------------------------------------------------------------------------------
 {
 	// Compose files

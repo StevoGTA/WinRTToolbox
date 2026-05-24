@@ -14,9 +14,9 @@ using IStorageItem = winrt::Windows::Storage::IStorageItem;
 using IStorageItemVectorView = winrt::Windows::Foundation::Collections::IVectorView<IStorageItem>;
 
 //----------------------------------------------------------------------------------------------------------------------
-// MARK: SFoldersFilexEx
+// MARK: SFoldersFilesEx
 
-class SFoldersFilexEx {
+class SFoldersFilesEx {
 	// Methods
 	public:
 								// Class methods
