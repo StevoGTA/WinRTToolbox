@@ -4,6 +4,10 @@
 
 #pragma once
 
+#undef Delete
+#include <unknwn.h>
+#define Delete(x)	{ delete x; x = nullptr; }
+
 #include "winrt\Windows.Foundation.h"
 
 using namespace winrt;
