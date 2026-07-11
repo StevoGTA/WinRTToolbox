@@ -1,5 +1,5 @@
 //----------------------------------------------------------------------------------------------------------------------
-//	CNotificationCenter+Extensions.h			©2021 Stevo Brock	All rights reserved.
+//	CNotificationCenter+Extensions.h			Â©2021 Stevo Brock	All rights reserved.
 //----------------------------------------------------------------------------------------------------------------------
 
 #pragma once

@@ -1,5 +1,5 @@
 //----------------------------------------------------------------------------------------------------------------------
-//	TimeAndDate+Extensions.cpp			©2026 Stevo Brock	All rights reserved.
+//	TimeAndDate+Extensions.cpp			Â©2026 Stevo Brock	All rights reserved.
 //----------------------------------------------------------------------------------------------------------------------
 
 #include "TimeAndDate+Extensions.h"

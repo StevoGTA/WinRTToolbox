@@ -1,5 +1,5 @@
 //----------------------------------------------------------------------------------------------------------------------
-//	PlatformDefinitions+Extensions.h			©2025 Stevo Brock	All rights reserved.
+//	PlatformDefinitions+Extensions.h			Â©2025 Stevo Brock	All rights reserved.
 //----------------------------------------------------------------------------------------------------------------------
 
 #pragma once
