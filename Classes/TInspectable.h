@@ -6,6 +6,7 @@
 
 #undef Delete
 #include <unknwn.h>
+#undef GetCurrentTime	// <unknwn.h> transitively pulls <winuser.h>, whose macro collides with WinUI Timeline::GetCurrentTime() - C4002
 #define Delete(x)	{ delete x; x = nullptr; }
 
 #include "winrt\Windows.Foundation.h"
