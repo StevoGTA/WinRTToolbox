@@ -27,19 +27,6 @@ using namespace winrt;
 	};
 
 //----------------------------------------------------------------------------------------------------------------------
-// MARK: - TVInspectable (Value Inspectable)
-
-#define DEFINE_TVInspectable(C, T)																\
-	struct C : public implements<C, Windows::Foundation::IInspectable> {						\
-		public:																					\
-				C(const T& v) : implements<C, Windows::Foundation::IInspectable>(), mV(v) {}	\
-			T&	GetValue()																		\
-					{ return mV; }																\
-		private:																				\
-			T	mV;																				\
-	};
-
-//----------------------------------------------------------------------------------------------------------------------
 // MARK: - TRInspectable (Reference Inspectable)
 
 #define DEFINE_TRInspectable(C, T)														\
