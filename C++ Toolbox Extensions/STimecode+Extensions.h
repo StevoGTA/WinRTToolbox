@@ -8,3 +8,4 @@
 #include "TInspectable.h"
 
 DEFINE_TCVInspectable(TimecodeFrameRateCVInspectable, STimecode::FrameRate);
+DEFINE_TCRInspectable(TimecodeFrameRateCRInspectable, STimecode::FrameRate);

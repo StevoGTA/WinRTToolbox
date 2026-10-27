@@ -8,3 +8,4 @@
 #include "TInspectable.h"
 
 DEFINE_TRInspectable(NotificationCenterRInspectable, CNotificationCenter);
+DEFINE_TCVInspectable(NotificationCenterAndNameCVInspectable, SNotificationCenterAndName);
