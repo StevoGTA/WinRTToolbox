@@ -4,6 +4,8 @@
 
 #include "TimeAndDate+Extensions.h"
 
+#include <cmath>
+
 // MARK: Functions
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -31,7 +33,7 @@ SGregorianDate::Components toGregorianDateComponents(const TimeSpan& timeSpan, b
 	return SGregorianDate::Components(OV<UInt32>(), OV<UInt8>(), OV<UInt8>(),
 			includeHour ? OV<UInt8>((timeSpan.count() / 36000000000) % 24) : OV<UInt8>(),
 			includeMinute ? OV<UInt8>((timeSpan.count() / 600000000) % 60) : OV<UInt8>(),
-			includeSecond ? OV<Float32>((timeSpan.count() / 10000000) % 60) : OV<Float32>());
+			includeSecond ? OV<Float32>((Float32) std::fmod(timeSpan.count() / 10000000.0, 60.0)) : OV<Float32>());
 }
 
 //----------------------------------------------------------------------------------------------------------------------
