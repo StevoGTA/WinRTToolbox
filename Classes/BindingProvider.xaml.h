@@ -48,19 +48,19 @@ namespace winrt::WinRTToolbox::implementation {
 
 		// Methods
 		public:
-						// Lifecycle Methods
-						BindingProvider(const IInspectable& bindingProviderAdapter);
-						~BindingProvider();
+									// Lifecycle Methods
+			explicit				BindingProvider(const IInspectable& bindingProviderAdapter);
+									~BindingProvider();
 
-						// Instance methods
-			bool		Boolean1() const;
-			void		Boolean1(bool value);
+									// Instance methods
+						bool		Boolean1() const;
+						void		Boolean1(bool value);
 
-			hstring		String1() const;
-			void		String1(hstring value);
+						hstring		String1() const;
+						void		String1(hstring value);
 
-			event_token	PropertyChanged(const PropertyChangedEventHandler& handler);
-			void		PropertyChanged(const event_token& token) noexcept;
+						event_token	PropertyChanged(const PropertyChangedEventHandler& handler);
+						void		PropertyChanged(const event_token& token) noexcept;
 
 		// Properties
 		private:
